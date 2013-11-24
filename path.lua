@@ -70,6 +70,14 @@ return {
     dirname = dirname,
     basename = basename,
     extname = extname,
-    exists = pathc.exists
+    exists = pathc.exists,
+    stat = pathc.stat,
+    isREG = pathc.isREG,
+    isDIR = pathc.isDIR,
+    isCHR = pathc.isCHR,
+    isBLK = pathc.isBLK,
+    isFIFO = pathc.isFIFO,
+    isLNK = pathc.isLNK,
+    isSOCK = pathc.isSOCK
 };
 
