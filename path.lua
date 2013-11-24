@@ -21,6 +21,7 @@
   THE SOFTWARE.
 
 --]]
+local pathc = require('pathc');
 
 local function normalize( ... )
     local argv = {...};
@@ -68,6 +69,7 @@ return {
     normalize = normalize,
     dirname = dirname,
     basename = basename,
-    extname = extname
+    extname = extname,
+    exists = pathc.exists
 };
 
