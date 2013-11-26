@@ -62,7 +62,7 @@ local function basename( path, suffix )
 end
 
 local function extname( path )
-    return string.match( path, '%.[^/.]*$' );
+    return string.match( path, '[^/%.](%.[%w]*)$' );
 end
 
 return {
