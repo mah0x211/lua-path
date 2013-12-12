@@ -73,7 +73,8 @@ static int stat_lua( lua_State *L )
     }
     else
     {
-        lua_pushboolean( L, 1 );
+        // no error
+        lua_pushnumber( L, 0 );
         // set fields
         lua_newtable( L );
         lstate_num2tbl( L, "dev", info.st_dev );
