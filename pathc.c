@@ -137,13 +137,13 @@ LUALIB_API int luaopen_pathc( lua_State *L )
     struct luaL_Reg funcs[] = {
         { "exists", exists_lua },
         { "stat", stat_lua },
-        { "isREG", isreg_lua },
-        { "isDIR", isdir_lua },
-        { "isCHR", ischr_lua },
-        { "isBLK", isblk_lua },
-        { "isFIFO", isfifo_lua },
-        { "isLNK", islnk_lua },
-        { "isSOCK", issock_lua },
+        { "isReg", isreg_lua },
+        { "isDir", isdir_lua },
+        { "isChr", ischr_lua },
+        { "isBlk", isblk_lua },
+        { "isFifo", isfifo_lua },
+        { "isLnk", islnk_lua },
+        { "isSock", issock_lua },
         { NULL, NULL }
     };
     int i = 0;

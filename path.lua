@@ -72,12 +72,12 @@ return {
     extname = extname,
     exists = pathc.exists,
     stat = pathc.stat,
-    isREG = pathc.isREG,
-    isDIR = pathc.isDIR,
-    isCHR = pathc.isCHR,
-    isBLK = pathc.isBLK,
-    isFIFO = pathc.isFIFO,
-    isLNK = pathc.isLNK,
-    isSOCK = pathc.isSOCK
+    isReg = pathc.isReg,
+    isDir = pathc.isDir,
+    isChr = pathc.isChr,
+    isBlk = pathc.isBlk,
+    isFifo = pathc.isFifo,
+    isLnk = pathc.isLnk,
+    isSock = pathc.isSock
 };
 
