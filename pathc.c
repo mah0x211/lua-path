@@ -53,7 +53,7 @@ static int exists_lua( lua_State *L )
         lua_pushnil(L);
     }
     else {
-        lua_pushboolean( L, 1 );
+        lua_pushnumber( L, 0 );
         lua_pushstring( L, rpath );
         free( rpath );
     }
