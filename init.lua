@@ -21,7 +21,7 @@
   THE SOFTWARE.
 
 --]]
-local pathc = require('pathc');
+local pathc = require('path.pathc');
 
 local function normalize( ... )
     local argv = {...};

@@ -15,9 +15,9 @@ dependencies = {
 build = {
     type = "builtin",
     modules = {
-        path = "path.lua",
-        pathc = {
-            sources = { "pathc.c" },
+        ["path.init"] = "init.lua",
+        ["path.pathc"] = {
+            sources = { "pathc.c" }
         }
     }
 }

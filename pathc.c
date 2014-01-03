@@ -132,7 +132,7 @@ static int const_newindex( lua_State *L ){
     return luaL_error( L, "attempting to change protected module" );
 }
 
-LUALIB_API int luaopen_pathc( lua_State *L )
+LUALIB_API int luaopen_path_pathc( lua_State *L )
 {
     struct luaL_Reg funcs[] = {
         { "exists", exists_lua },
