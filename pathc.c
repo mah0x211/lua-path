@@ -48,18 +48,19 @@ static int exists_lua( lua_State *L )
     const char *path = luaL_checklstring( L, 1, &len );
     char *rpath = realpath( path, NULL );
     
-    if( !rpath ){
-        lua_pushnumber( L, errno );
-        lua_pushnil(L);
-    }
-    else {
-        lua_pushnumber( L, 0 );
+    if( rpath ){
         lua_pushstring( L, rpath );
         free( rpath );
+        return 1;
     }
+    
+    // got error
+    lua_pushnil(L);
+    lua_pushnumber( L, errno );
     
     return 2;
 }
+
 
 static int stat_lua( lua_State *L )
 {
@@ -67,14 +68,7 @@ static int stat_lua( lua_State *L )
     const char *path = luaL_checklstring( L, 1, &len );
     struct stat info = {0};
     
-    if( stat( path, &info ) != 0 ){
-        lua_pushnumber( L, errno );
-        lua_pushnil(L);
-    }
-    else
-    {
-        // no error
-        lua_pushnumber( L, 0 );
+    if( stat( path, &info ) == 0 ){
         // set fields
         lua_newtable( L );
         lstate_num2tbl( L, "dev", info.st_dev );
@@ -90,7 +84,12 @@ static int stat_lua( lua_State *L )
         lstate_num2tbl( L, "atime", info.st_atime );
         lstate_num2tbl( L, "mtime", info.st_mtime );
         lstate_num2tbl( L, "ctime", info.st_ctime );
+        return 1;
     }
+    
+    // got error
+    lua_pushnil(L);
+    lua_pushnumber( L, errno );
     
     return 2;
 }
