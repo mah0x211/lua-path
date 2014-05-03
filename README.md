@@ -74,7 +74,7 @@ returns the canonicalized absolute pathname.
 2. errno: dependent on a system.
 
 
-### info = stat( path )
+### info, errno = stat( path )
 
 return a information about the file pointed to by specified path.
 
