@@ -3,6 +3,21 @@ lua-path
 
 path string manipulation
 
+## Installation
+
+```sh
+luarocks install --from=http://mah0x211.github.io/rocks/ path
+```
+
+or 
+
+```sh
+git clone https://github.com/mah0x211/lua-path.git
+cd lua-path
+luarocks make
+```
+
+
 ## functions
 
 ### path = normalize( str, str[, ...] )
