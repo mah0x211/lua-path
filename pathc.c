@@ -24,6 +24,7 @@
  */
 
 #include <stdlib.h>
+#include <stddef.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <lauxlib.h>
@@ -90,6 +91,27 @@ static int basename_lua( lua_State *L )
     
     return 1;
 }
+
+
+static int extname_lua( lua_State *L )
+{
+    size_t len = 0;
+    const char *path = luaL_checklstring( L, 1, &len );
+    const char *ptr = NULL;
+    const char *ext = NULL;
+    
+    if( path[len-1] == '/' ){
+        len--;
+        ((char*)path)[len] = 0;
+    }
+    ptr = rlindex( path, len, '/' );
+    ext = rlindex( ptr, len - ( (ptrdiff_t)ptr - (ptrdiff_t)path ), '.' );
+    
+    lua_pushstring( L, ext != ptr ? ext - 1 : "" );
+    
+    return 1;
+}
+
 
 static int exists_lua( lua_State *L )
 {
@@ -185,6 +207,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
     struct luaL_Reg funcs[] = {
         { "dirname", dirname_lua },
         { "basename", basename_lua },
+        { "extname", extname_lua },
         { "exists", exists_lua },
         { "stat", stat_lua },
         { "isReg", isreg_lua },
