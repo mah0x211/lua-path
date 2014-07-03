@@ -48,28 +48,11 @@ local function normalize( ... )
     return '/' .. table.concat( res, '/' );
 end
 
-local function dirname( path )
-    return string.match( path, '^(.+)/[^/]+$' );
-end
-
-local function basename( path, suffix )
-    path = string.match( path, '^.+/([^/]+)$' );
-    if suffix and suffix ~= path then
-        return string.gsub( path, string.gsub( suffix, '%.', '%%.' ) .. '$', '' );
-    end
-    
-    return path;
-end
-
-local function extname( path )
-    return string.match( path, '[^/%.](%.[%w]*)$' );
-end
-
 return {
     normalize = normalize,
-    dirname = dirname,
-    basename = basename,
-    extname = extname,
+    dirname = pathc.dirname,
+    basename = pathc.basename,
+    extname = pathc.extname,
     exists = pathc.exists,
     stat = pathc.stat,
     isReg = pathc.isReg,
