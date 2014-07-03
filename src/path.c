@@ -107,7 +107,12 @@ static int extname_lua( lua_State *L )
     ptr = rlindex( path, len, '/' );
     ext = rlindex( ptr, len - ( (ptrdiff_t)ptr - (ptrdiff_t)path ), '.' );
     
-    lua_pushstring( L, ext != ptr ? ext - 1 : "" );
+    if( ext == ptr ){
+        lua_pushnil( L );
+    }
+    else {
+        lua_pushstring( L, ext - 1 );
+    }
     
     return 1;
 }
