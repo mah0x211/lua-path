@@ -133,13 +133,30 @@ static int exists_lua( lua_State *L )
 }
 
 
+typedef int (*statfn_t)(const char *, struct stat *);
+
 static int stat_lua( lua_State *L )
 {
+    int argc = lua_gettop( L );
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
     struct stat info = {0};
+    statfn_t statfn = stat;
     
-    if( stat( path, &info ) == 0 ){
+    // check argument
+    // follow symlinks option: default true
+    if( argc > 1 && !lua_isnoneornil( L, 2 ) )
+    {
+        if( !lua_isboolean( L, 2 ) ){
+            return luaL_argerror( L, 2, "argument#2 must be type of boolean" );
+        }
+        // false then not follow symlinks
+        else if( !lua_toboolean( L, 2 ) ){
+            statfn = lstat;
+        }
+    }
+    
+    if( statfn( path, &info ) == 0 ){
         // set fields
         lua_newtable( L );
         lstate_num2tbl( L, "dev", info.st_dev );
