@@ -41,6 +41,40 @@
     lua_rawset(L,-3); \
 }while(0)
 
+static inline const char *rlindex( const char *str, size_t len, int c )
+{
+    size_t pos = len;
+    
+    while( --pos > 0 )
+    {
+        if( str[pos] == c ){
+            return str + pos + 1;
+        }
+    }
+    
+    if( *str == c ){
+        return str + 1;
+    }
+    
+    return str;
+}
+
+static int dirname_lua( lua_State *L )
+{
+    size_t len = 0;
+    const char *path = luaL_checklstring( L, 1, &len );
+    const char *ptr = rlindex( path, len, '/' );
+    
+    if( ptr == path ){
+        lua_pushlstring( L, "", 0 );
+    }
+    else {
+        len = (ptrdiff_t)ptr - (ptrdiff_t)path - 1;
+        lua_pushlstring( L, path, len ? len : 1 );
+    }
+    
+    return 1;
+}
 
 static int exists_lua( lua_State *L )
 {
@@ -134,6 +168,7 @@ static int const_newindex( lua_State *L ){
 LUALIB_API int luaopen_path_pathc( lua_State *L )
 {
     struct luaL_Reg funcs[] = {
+        { "dirname", dirname_lua },
         { "exists", exists_lua },
         { "stat", stat_lua },
         { "isReg", isreg_lua },
