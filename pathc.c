@@ -76,6 +76,21 @@ static int dirname_lua( lua_State *L )
     return 1;
 }
 
+static int basename_lua( lua_State *L )
+{
+    size_t len = 0;
+    const char *path = luaL_checklstring( L, 1, &len );
+    
+    if( path[len-1] == '/' ){
+        len--;
+        ((char*)path)[len] = 0;
+    }
+    
+    lua_pushstring( L, rlindex( path, len, '/' ) );
+    
+    return 1;
+}
+
 static int exists_lua( lua_State *L )
 {
     size_t len = 0;
@@ -169,6 +184,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
 {
     struct luaL_Reg funcs[] = {
         { "dirname", dirname_lua },
+        { "basename", basename_lua },
         { "exists", exists_lua },
         { "stat", stat_lua },
         { "isReg", isreg_lua },
