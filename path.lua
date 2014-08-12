@@ -61,6 +61,7 @@ return {
     isBlk = pathc.isBlk,
     isFifo = pathc.isFifo,
     isLnk = pathc.isLnk,
-    isSock = pathc.isSock
+    isSock = pathc.isSock,
+    readdir = pathc.readdir
 };
 

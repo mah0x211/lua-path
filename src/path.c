@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <errno.h>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -47,6 +48,12 @@
     lua_pushstring(L,v); \
     lua_rawset(L,-3); \
 }while(0)
+
+#define lstate_str2arr(L,v,i) do{ \
+    lua_pushstring(L,v); \
+    lua_rawseti(L,-2,i); \
+}while(0)
+
 
 static inline const char *rlindex( const char *str, size_t len, int c )
 {
@@ -243,6 +250,7 @@ static int stat_lua( lua_State *L )
     return 2;
 }
 
+
 #define push_modetype(L,t,v)    lua_pushboolean(L,t(v))
 
 static int isreg_lua( lua_State *L ){
@@ -275,6 +283,40 @@ static int issock_lua( lua_State *L ){
 }
 
 
+static int readdir_lua( lua_State *L )
+{
+    size_t len = 0;
+    const char *path = luaL_checklstring( L, 1, &len );
+    DIR *dir = opendir( path );
+    
+    if( dir )
+    {
+        struct dirent *entry = NULL;
+        int i = 0;
+        
+        lua_newtable( L );
+        errno = 0;
+        while( ( entry = readdir( dir ) ) ){
+            lstate_str2arr( L, entry->d_name, ++i );
+        }
+        
+        closedir( dir );
+        if( errno ){
+            lua_pop( L, 1 );
+        }
+        else {
+            return 1;
+        }
+    }
+    
+    // got error
+    lua_pushnil(L);
+    lua_pushnumber( L, errno );
+    
+    return 2;
+}
+
+
 // make error
 static int const_newindex( lua_State *L ){
     return luaL_error( L, "attempting to change protected module" );
@@ -295,6 +337,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
         { "isFifo", isfifo_lua },
         { "isLnk", islnk_lua },
         { "isSock", issock_lua },
+        { "readdir", readdir_lua },
         { NULL, NULL }
     };
     int i = 0;
