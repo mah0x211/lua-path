@@ -132,3 +132,18 @@ returns a true if it is symbolic link.
 
 returns a true if it is socket.
 
+
+### entries, errno = readdir( path )
+
+return entries of specified directory path.
+
+**Parameters**
+
+- path: directory path string.
+
+**Returns**
+
+1. entries: entries table.
+
+2. errno: dependent on a system.
+
