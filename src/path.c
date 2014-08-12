@@ -42,6 +42,12 @@
     lua_rawset(L,-3); \
 }while(0)
 
+#define lstate_str2tbl(L,k,v) do{ \
+    lua_pushstring(L,k); \
+    lua_pushstring(L,v); \
+    lua_rawset(L,-3); \
+}while(0)
+
 static inline const char *rlindex( const char *str, size_t len, int c )
 {
     size_t pos = len;
@@ -147,21 +153,38 @@ static int stat_lua( lua_State *L )
     const char *path = luaL_checklstring( L, 1, &len );
     struct stat info = {0};
     statfn_t statfn = stat;
+    int typeinfo = 1;
     
     // check argument
-    // follow symlinks option: default true
-    if( argc > 1 && !lua_isnoneornil( L, 2 ) )
+    switch( argc )
     {
-        if( !lua_isboolean( L, 2 ) ){
-            return luaL_argerror( L, 2, "argument#2 must be type of boolean" );
-        }
-        // false then not follow symlinks
-        else if( !lua_toboolean( L, 2 ) ){
-            statfn = lstat;
-        }
+        // type option: default true
+        case 3:
+            if( !lua_isnoneornil( L, 3 ) )
+            {
+                if( !lua_isboolean( L, 3 ) ){
+                    return luaL_argerror( L, 3, "argument#3 must be type of boolean" );
+                }
+                typeinfo = lua_toboolean( L, 3 );
+            }
+        // follow symlinks option: default true
+        case 2:
+            if( !lua_isnoneornil( L, 2 ) )
+            {
+                if( !lua_isboolean( L, 2 ) ){
+                    return luaL_argerror( L, 2, "argument#2 must be type of boolean" );
+                }
+                // false then not follow symlinks
+                else if( !lua_toboolean( L, 2 ) ){
+                    statfn = lstat;
+                }
+            }
+        break;
     }
     
-    if( statfn( path, &info ) == 0 ){
+    
+    if( statfn( path, &info ) == 0 )
+    {
         // set fields
         lua_newtable( L );
         lstate_num2tbl( L, "dev", info.st_dev );
@@ -177,6 +200,39 @@ static int stat_lua( lua_State *L )
         lstate_num2tbl( L, "atime", info.st_atime );
         lstate_num2tbl( L, "mtime", info.st_mtime );
         lstate_num2tbl( L, "ctime", info.st_ctime );
+        if( typeinfo )
+        {
+            switch( info.st_mode & S_IFMT ){
+                // regular file
+                case S_IFREG:
+                    lstate_str2tbl( L, "type", "reg" );
+                break;
+                // directory
+                case S_IFDIR:
+                    lstate_str2tbl( L, "type", "dir" );
+                break;
+                // symbolic link
+                case S_IFLNK:
+                    lstate_str2tbl( L, "type", "lnk" );
+                break;
+                // char special
+                case S_IFCHR:
+                    lstate_str2tbl( L, "type", "chr" );
+                break;
+                // block special
+                case S_IFBLK:
+                    lstate_str2tbl( L, "type", "blk" );
+                break;
+                // socket
+                case S_IFSOCK:
+                    lstate_str2tbl( L, "type", "sock" );
+                break;
+                // fifo or socket
+                case S_IFIFO:
+                    lstate_str2tbl( L, "type", "fifo" );
+                break;
+            }
+        }
         return 1;
     }
     
