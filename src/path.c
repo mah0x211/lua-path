@@ -72,7 +72,7 @@ static inline const char *rlindex( const char *str, size_t len, int c )
         return str + 1;
     }
     
-    return str;
+    return NULL;
 }
 
 static int dirname_lua( lua_State *L )
@@ -119,21 +119,26 @@ static int extname_lua( lua_State *L )
 {
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
-    const char *ptr = NULL;
-    const char *ext = NULL;
     
-    if( path[len-1] == '/' ){
-        len--;
-        ((char*)path)[len] = 0;
-    }
-    ptr = rlindex( path, len, '/' );
-    ext = rlindex( ptr, len - ( (ptrdiff_t)ptr - (ptrdiff_t)path ), '.' );
-    
-    if( ext == ptr ){
+    if( *path == '/' ){
         lua_pushnil( L );
     }
-    else {
-        lua_pushstring( L, ext - 1 );
+    else
+    {
+        const char *head = rlindex( path, len, '/' );
+        const char *ext = NULL;
+        
+        if( !head ){
+            head = path;
+        }
+        
+        ext = rlindex( head, len - ( head - path ), '.' );
+        if( ext && ( ext - 1 ) != head ){
+            lua_pushlstring( L, ext - 1, len - ( ext - path - 1 ) );
+        }
+        else {
+            lua_pushnil( L );
+        }
     }
     
     return 1;
