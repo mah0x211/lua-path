@@ -46,6 +46,7 @@ return a directory portion of path string.
 **Returns**
 
 1. path: directory portion of path string.
+2. errno: dependent on a system.
 
 
 ### path = basename( path )
@@ -59,6 +60,7 @@ return a filename or directory portion of path string.
 **Returns**
 
 1. path: filename or directory portion of path string.
+2. errno: dependent on a system.
 
 
 ### ext = extname( path )
