@@ -26,8 +26,10 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <errno.h>
+#include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <libgen.h>
 #include <lauxlib.h>
 #include <lualib.h>
 
@@ -77,32 +79,39 @@ static int dirname_lua( lua_State *L )
 {
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
-    const char *ptr = rlindex( path, len, '/' );
+    char *buf = strndup( path, len );
     
-    if( ptr == path ){
-        lua_pushlstring( L, "", 0 );
-    }
-    else {
-        len = (ptrdiff_t)ptr - (ptrdiff_t)path - 1;
-        lua_pushlstring( L, path, len ? len : 1 );
+    if( buf ){
+        lua_pushstring( L, dirname( buf ) );
+        free( buf );
+        return 1;
     }
     
-    return 1;
+    // got error
+    lua_pushnil( L );
+    lua_pushnumber( L, errno );
+    
+    return 2;
 }
+
 
 static int basename_lua( lua_State *L )
 {
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
+    char *buf = strndup( path, len );
     
-    if( path[len-1] == '/' ){
-        len--;
-        ((char*)path)[len] = 0;
+    if( buf ){
+        lua_pushstring( L, basename( buf ) );
+        free( buf );
+        return 1;
     }
+
+    // got error
+    lua_pushnil( L );
+    lua_pushnumber( L, errno );
     
-    lua_pushstring( L, rlindex( path, len, '/' ) );
-    
-    return 1;
+    return 2;
 }
 
 
