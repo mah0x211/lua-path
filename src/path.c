@@ -57,24 +57,6 @@
 }while(0)
 
 
-static inline const char *rlindex( const char *str, size_t len, int c )
-{
-    size_t pos = len;
-    
-    while( --pos > 0 )
-    {
-        if( str[pos] == c ){
-            return str + pos + 1;
-        }
-    }
-    
-    if( *str == c ){
-        return str + 1;
-    }
-    
-    return NULL;
-}
-
 static int dirname_lua( lua_State *L )
 {
     size_t len = 0;
@@ -119,26 +101,13 @@ static int extname_lua( lua_State *L )
 {
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
+    const char *ext = NULL;
     
-    if( *path == '/' ){
+    if( !len || !( ext = rindex( path, '.' ) ) || index( ext, '/' ) ){
         lua_pushnil( L );
     }
-    else
-    {
-        const char *head = rlindex( path, len, '/' );
-        const char *ext = NULL;
-        
-        if( !head ){
-            head = path;
-        }
-        
-        ext = rlindex( head, len - ( head - path ), '.' );
-        if( ext && ( ext - 1 ) != head ){
-            lua_pushlstring( L, ext - 1, len - ( ext - path - 1 ) );
-        }
-        else {
-            lua_pushnil( L );
-        }
+    else {
+        lua_pushlstring( L, ext, len - ( ext - path ) );
     }
     
     return 1;
