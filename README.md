@@ -18,7 +18,7 @@ luarocks make
 ```
 
 
-## functions
+## Functions
 
 ### path = normalize( str, str[, ...] )
 
@@ -46,7 +46,7 @@ return a directory portion of path string.
 **Returns**
 
 1. path: directory portion of path string.
-2. errno: dependent on a system.
+2. errstr: dependent on a system.
 
 
 ### path = basename( path )
@@ -60,7 +60,7 @@ return a filename or directory portion of path string.
 **Returns**
 
 1. path: filename or directory portion of path string.
-2. errno: dependent on a system.
+2. errstr: dependent on a system.
 
 
 ### ext = extname( path )
@@ -76,7 +76,7 @@ return a extension of the path string.
 1. path: extension of the path string.
 
 
-### path, errno = exists( path )
+### path, errstr = exists( path )
 
 returns the canonicalized absolute pathname.
 
@@ -88,10 +88,10 @@ returns the canonicalized absolute pathname.
 
 1. path: returns the canonicalized absolute pathname.
 
-2. errno: dependent on a system.
+2. errstr: dependent on a system.
 
 
-### info, errno = stat( path )
+### info, errstr = stat( path )
 
 return a information about the file pointed to by specified path.
 
@@ -103,7 +103,7 @@ return a information about the file pointed to by specified path.
 
 1. info: info table. (same as struct stat without st_ prefix)
 
-2. errno: dependent on a system.
+2. errstr: dependent on a system.
 
 
 ### bool = isReg( info.mode )
@@ -135,7 +135,7 @@ returns a true if it is symbolic link.
 returns a true if it is socket.
 
 
-### entries, errno = readdir( path )
+### entries, errstr = readdir( path )
 
 return entries of specified directory path.
 
@@ -147,5 +147,5 @@ return entries of specified directory path.
 
 1. entries: entries table.
 
-2. errno: dependent on a system.
+2. errstr: dependent on a system.
 
