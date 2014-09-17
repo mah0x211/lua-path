@@ -71,7 +71,7 @@ static int dirname_lua( lua_State *L )
     
     // got error
     lua_pushnil( L );
-    lua_pushnumber( L, errno );
+    lua_pushstring( L, strerror( errno ) );
     
     return 2;
 }
@@ -91,7 +91,7 @@ static int basename_lua( lua_State *L )
 
     // got error
     lua_pushnil( L );
-    lua_pushnumber( L, errno );
+    lua_pushstring( L, strerror( errno ) );
     
     return 2;
 }
@@ -128,7 +128,7 @@ static int exists_lua( lua_State *L )
     
     // got error
     lua_pushnil(L);
-    lua_pushnumber( L, errno );
+    lua_pushstring( L, strerror( errno ) );
     
     return 2;
 }
@@ -228,7 +228,7 @@ static int stat_lua( lua_State *L )
     
     // got error
     lua_pushnil(L);
-    lua_pushnumber( L, errno );
+    lua_pushstring( L, strerror( errno ) );
     
     return 2;
 }
@@ -294,7 +294,7 @@ static int readdir_lua( lua_State *L )
     
     // got error
     lua_pushnil(L);
-    lua_pushnumber( L, errno );
+    lua_pushstring( L, strerror( errno ) );
     
     return 2;
 }
