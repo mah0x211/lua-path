@@ -26,7 +26,6 @@ local pathc = require('path.pathc');
 local function normalize( ... )
     local argv = {...};
     local path = argv[1];
-    local seg = nil;
     local res = {};
     
     if #argv > 1 then
