@@ -106,6 +106,36 @@ return a information about the file pointed to by specified path.
 2. errstr: dependent on a system.
 
 
+### bool = toReg( path )
+
+returns the absolute path if it is regular file.
+
+**Parameters**
+
+- path: path string.
+
+**Returns**
+
+1. path: absolute path string
+
+2. errstr: dependent on a system.
+
+
+### bool = toDir( path )
+
+returns the absolute path if it is directory.
+
+**Parameters**
+
+- path: path string.
+
+**Returns**
+
+1. path: absolute path string
+
+2. errstr: dependent on a system.
+
+
 ### bool = isReg( info.mode )
 
 returns a true if it is regular file.
