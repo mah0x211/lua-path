@@ -106,7 +106,7 @@ return a information about the file pointed to by specified path.
 2. errstr: dependent on a system.
 
 
-### bool = toReg( path )
+### path = toReg( path )
 
 returns the absolute path if it is regular file.
 
@@ -121,7 +121,7 @@ returns the absolute path if it is regular file.
 2. errstr: dependent on a system.
 
 
-### bool = toDir( path )
+### path = toDir( path )
 
 returns the absolute path if it is directory.
 
