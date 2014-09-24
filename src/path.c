@@ -134,6 +134,55 @@ static int exists_lua( lua_State *L )
 }
 
 
+static inline int pathof_lua( lua_State *L, mode_t m )
+{
+    size_t len = 0;
+    const char *path = luaL_checklstring( L, 1, &len );
+    char *rpath = realpath( path, NULL );
+    int rc = -1;
+    
+    if( rpath )
+    {
+        struct stat info = {0};
+        
+        if( stat( path, &info ) == 0 )
+        {
+            if( ( info.st_mode & S_IFMT ) == m ){
+                lua_pushstring( L, rpath );
+                rc = 1;
+            }
+            else {
+                rc = 0;
+            }
+        }
+        
+        free( rpath );
+    }
+        
+    switch( rc ){
+        case 0:
+            lua_pushnil( L );
+        case 1:
+            return 1;
+        // got error
+        default:
+            lua_pushnil(L);
+            lua_pushstring( L, strerror( errno ) );
+            return 2;
+    }
+}
+
+static int toreg_lua( lua_State *L )
+{
+    return pathof_lua( L, S_IFREG );
+}
+
+static int todir_lua( lua_State *L )
+{
+    return pathof_lua( L, S_IFDIR );
+}
+
+
 typedef int (*statfn_t)(const char *, struct stat *);
 
 static int stat_lua( lua_State *L )
@@ -313,6 +362,8 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
         { "extname", extname_lua },
         { "exists", exists_lua },
         { "stat", stat_lua },
+        { "toReg", toreg_lua },
+        { "toDir", todir_lua },
         { "isReg", isreg_lua },
         { "isDir", isdir_lua },
         { "isChr", ischr_lua },
@@ -323,7 +374,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
         { "readdir", readdir_lua },
         { NULL, NULL }
     };
-    int i = 0;
+    struct luaL_Reg *ptr = funcs;
     
     // create protected-table
     lua_newtable( L );
@@ -334,11 +385,12 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
     lua_newtable( L );
     
     // set functions
-    for( i = 0; funcs[i].name; i++ ){ 
-        lua_pushstring( L, funcs[i].name );
-        lua_pushcfunction( L, funcs[i].func );
+    do {
+        lua_pushstring( L, ptr->name );
+        lua_pushcfunction( L, ptr->func );
         lua_rawset( L, -3 );
-    }
+        ptr++;
+    } while( ptr->name );
     
     // set substance to __metable.__index field
     lua_rawset( L, -3 );
