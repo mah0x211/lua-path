@@ -23,29 +23,47 @@
 --]]
 local pathc = require('path.pathc');
 
-local function normalize( ... )
+
+local function concat( sep, ... )
     local argv = {...};
-    local path = argv[1];
+    local i, v = next( argv );
     local res = {};
+    local len = 0;
     
-    if #argv > 1 then
-        path = table.concat( argv, '/' );
-    else
-        path = argv[1];
+    while i do
+        if v ~= nil then
+            len = len + 1;
+            res[len] = tostring( v );
+        end
+        i, v = next( argv, i );
     end
+    
+    return table.concat( res, sep );
+end
+
+
+local function normalize( ... )
+    local path = concat( '/', ... );
+    local res = {};
+    local len = 0;
     
     -- remove double slash
     path = path:gsub( '/+', '/' );
     for seg in string.gmatch( path, '[^/]+' ) do
         if seg == '..' then
-            table.remove( res );
+            if len > 0 then
+                res[len] = nil;
+                len = len - 1;
+            end
         elseif seg ~= '.' then
-            table.insert( res, seg );
+            len = len + 1;
+            res[len] = seg;
         end
     end
     
     return '/' .. table.concat( res, '/' );
 end
+
 
 return {
     normalize = normalize,
