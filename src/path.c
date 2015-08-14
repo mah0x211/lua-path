@@ -29,9 +29,17 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <libgen.h>
 #include <lauxlib.h>
 #include <lualib.h>
+
+#define lstate_fn2tbl(L,k,v) do{ \
+    lua_pushstring(L,k); \
+    lua_pushcfunction(L,v); \
+    lua_rawset(L,-3); \
+}while(0)
 
 #define lstate_num2tbl(L,k,v) do{ \
     lua_pushstring(L,k); \
@@ -193,39 +201,61 @@ static int stat_lua( lua_State *L )
     struct stat info = {0};
     statfn_t statfn = stat;
     int typeinfo = 1;
+    int openfd = 0;
+    int flgs = O_RDONLY|O_CLOEXEC;
     
     // check argument
+    if( argc > 4 ){
+        argc = 4;
+    }
     switch( argc )
     {
+        // fd option
+        case 4:
+            if( !lua_isnoneornil( L, 4 ) ){
+                luaL_checktype( L, 4, LUA_TBOOLEAN );
+                openfd = lua_toboolean( L, 4 );
+            }
         // type option: default true
         case 3:
-            if( !lua_isnoneornil( L, 3 ) )
-            {
-                if( !lua_isboolean( L, 3 ) ){
-                    return luaL_argerror( L, 3, "argument#3 must be type of boolean" );
-                }
+            if( !lua_isnoneornil( L, 3 ) ){
+                luaL_checktype( L, 3, LUA_TBOOLEAN );
                 typeinfo = lua_toboolean( L, 3 );
             }
         // follow symlinks option: default true
         case 2:
             if( !lua_isnoneornil( L, 2 ) )
             {
-                if( !lua_isboolean( L, 2 ) ){
-                    return luaL_argerror( L, 2, "argument#2 must be type of boolean" );
-                }
+                luaL_checktype( L, 2, LUA_TBOOLEAN );
                 // false then not follow symlinks
-                else if( !lua_toboolean( L, 2 ) ){
+                if( !lua_toboolean( L, 2 ) ){
                     statfn = lstat;
+                    flgs |= O_NOFOLLOW;
                 }
             }
         break;
     }
     
-    
-    if( statfn( path, &info ) == 0 )
+    if( openfd )
     {
+        if( ( openfd = open( path, flgs, 0000644 ) ) == -1 ){
+            goto STAT_FAILURE;
+        }
+        else if( fstat( openfd, &info ) == -1 ){
+            close( openfd );
+            goto STAT_FAILURE;
+        }
+        goto STAT_SUCCESS;
+    }
+    else if( statfn( path, &info ) == 0 )
+    {
+STAT_SUCCESS:
         // set fields
         lua_newtable( L );
+        // add descriptor
+        if( openfd ){
+            lstate_num2tbl( L, "fd", openfd );
+        }
         lstate_num2tbl( L, "dev", info.st_dev );
         lstate_num2tbl( L, "ino", info.st_ino );
         lstate_num2tbl( L, "mode", info.st_mode );
@@ -274,7 +304,8 @@ static int stat_lua( lua_State *L )
         }
         return 1;
     }
-    
+
+STAT_FAILURE:
     // got error
     lua_pushnil(L);
     lua_pushstring( L, strerror( errno ) );
@@ -386,9 +417,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
     
     // set functions
     do {
-        lua_pushstring( L, ptr->name );
-        lua_pushcfunction( L, ptr->func );
-        lua_rawset( L, -3 );
+        lstate_fn2tbl( L, ptr->name, ptr->func );
         ptr++;
     } while( ptr->name );
     
