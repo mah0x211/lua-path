@@ -79,22 +79,23 @@ returns the canonicalized absolute pathname.
 **Returns**
 
 1. path: returns the canonicalized absolute pathname.
-
 2. errstr: dependent on a system.
 
 
-### info, errstr = stat( path )
+### info, errstr = stat( path [, openfd [, followSymlink]] )
 
 return a information about the file pointed to by specified path.
 
 **Parameters**
 
 - path: path string.
+- openfd: open a file descriptor (default: false).
+- followSymlink: follow symbolic links (default: true).
+
 
 **Returns**
 
 1. info: info table. (same as struct stat without st_ prefix)
-
 2. errstr: dependent on a system.
 
 
@@ -109,7 +110,6 @@ returns the absolute path if it is regular file.
 **Returns**
 
 1. path: absolute path string
-
 2. errstr: dependent on a system.
 
 
@@ -124,7 +124,6 @@ returns the absolute path if it is directory.
 **Returns**
 
 1. path: absolute path string
-
 2. errstr: dependent on a system.
 
 
@@ -168,6 +167,5 @@ return entries of specified directory path.
 **Returns**
 
 1. entries: entries table.
-
 2. errstr: dependent on a system.
 
