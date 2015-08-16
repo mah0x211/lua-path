@@ -209,22 +209,23 @@ static int stat_lua( lua_State *L )
     }
     switch( argc )
     {
-        // follow symlinks option: default true
+        // fd option
         case 3:
-            if( !lua_isnoneornil( L, 3 ) )
-            {
+            if( !lua_isnoneornil( L, 3 ) ){
                 luaL_checktype( L, 3, LUA_TBOOLEAN );
+                openfd = lua_toboolean( L, 3 );
+            }
+        
+        // follow symlinks option: default true
+        case 2:
+            if( !lua_isnoneornil( L, 2 ) )
+            {
+                luaL_checktype( L, 2, LUA_TBOOLEAN );
                 // false then not follow symlinks
-                if( !lua_toboolean( L, 3 ) ){
+                if( !lua_toboolean( L, 2 ) ){
                     statfn = lstat;
                     flgs |= O_NOFOLLOW;
                 }
-            }
-        // fd option
-        case 2:
-            if( !lua_isnoneornil( L, 2 ) ){
-                luaL_checktype( L, 2, LUA_TBOOLEAN );
-                openfd = lua_toboolean( L, 2 );
             }
         break;
     }
