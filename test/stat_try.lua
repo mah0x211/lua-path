@@ -20,14 +20,14 @@ stat = ifNil( path.stat( 'stat_try_sym.lua' ) );
 ifNotEqual( stat.type, 'reg' );
 
 
-stat = ifNotNil( path.stat( 'stat_try_sym.lua', true, false ) );
+stat = ifNil( path.stat( 'stat_try_sym.lua', false ) );
+ifNotEqual( stat.type, 'lnk' );
 
 
-stat = ifNil( path.stat( 'stat_try_sym.lua', true ) );
-ifNil( stat.fd );
-
+stat = ifNotNil( path.stat( 'stat_try_sym.lua', false, true ) );
 
 stat = ifNil( path.stat( 'stat_try_sym.lua', true, true ) );
+ifNotEqual( stat.type, 'reg' );
 ifNil( stat.fd );
 
 
