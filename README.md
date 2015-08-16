@@ -82,15 +82,15 @@ returns the canonicalized absolute pathname.
 2. errstr: dependent on a system.
 
 
-### info, errstr = stat( path [, openfd [, followSymlink]] )
+### info, errstr = stat( path [, followSymlink [,  openfd]] )
 
 return a information about the file pointed to by specified path.
 
 **Parameters**
 
 - path: path string.
-- openfd: open a file descriptor (default: false).
 - followSymlink: follow symbolic links (default: true).
+- openfd: open a file descriptor (default: false).
 
 
 **Returns**
