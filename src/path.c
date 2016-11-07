@@ -309,6 +309,10 @@ STAT_SUCCESS:
 
 STAT_FAILURE:
     // got error
+    if( errno == ENOENT ){
+        return 0;
+    }
+
     lua_pushnil(L);
     lua_pushstring( L, strerror( errno ) );
     
