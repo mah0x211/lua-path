@@ -78,7 +78,7 @@ returns the canonicalized absolute pathname.
 
 **Returns**
 
-1. path: returns the canonicalized absolute pathname.
+1. path: returns the canonicalized absolute pathname or nil on error or not exists.
 2. errstr: dependent on a system.
 
 
@@ -95,7 +95,7 @@ return a information about the file pointed to by specified path.
 
 **Returns**
 
-1. info: info table. (same as struct stat without st_ prefix)
+1. info: info table (same as struct stat without st_ prefix), nil on error or not exists.
 2. errstr: dependent on a system.
 
 
@@ -109,7 +109,7 @@ returns the absolute path if it is regular file.
 
 **Returns**
 
-1. path: absolute path string
+1. path: absolute path string or nil on error or not exists.
 2. errstr: dependent on a system.
 
 
@@ -123,7 +123,7 @@ returns the absolute path if it is directory.
 
 **Returns**
 
-1. path: absolute path string
+1. path: absolute path string or nil on error or not exists.
 2. errstr: dependent on a system.
 
 
@@ -166,6 +166,6 @@ return entries of specified directory path.
 
 **Returns**
 
-1. entries: entries table.
+1. entries: entries table, nil on error or not exists.
 2. errstr: dependent on a system.
 
