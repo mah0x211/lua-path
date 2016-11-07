@@ -379,6 +379,9 @@ static int readdir_lua( lua_State *L )
     }
     
     // got error
+    if( errno == ENOENT ){
+        return 0;
+    }
     lua_pushnil(L);
     lua_pushstring( L, strerror( errno ) );
     
