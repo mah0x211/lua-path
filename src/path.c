@@ -171,13 +171,19 @@ static inline int pathof_lua( lua_State *L, mode_t m )
         free( rpath );
     }
         
-    switch( rc ){
+    switch( rc )
+    {
         case 0:
             lua_pushnil( L );
         case 1:
             return 1;
         // got error
         default:
+            // not exists
+            if( errno == ENOENT ){
+                return 0;
+            }
+
             lua_pushnil(L);
             lua_pushstring( L, strerror( errno ) );
             return 2;
