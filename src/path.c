@@ -133,7 +133,11 @@ static int exists_lua( lua_State *L )
         free( rpath );
         return 1;
     }
-    
+    // not exists
+    else if( errno == ENOENT ){
+        return 0;
+    }
+
     // got error
     lua_pushnil(L);
     lua_pushstring( L, strerror( errno ) );
