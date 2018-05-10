@@ -70,17 +70,17 @@ static int dirname_lua( lua_State *L )
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
     char *buf = strndup( path, len );
-    
+
     if( buf ){
         lua_pushstring( L, dirname( buf ) );
         free( buf );
         return 1;
     }
-    
+
     // got error
     lua_pushnil( L );
     lua_pushstring( L, strerror( errno ) );
-    
+
     return 2;
 }
 
@@ -90,7 +90,7 @@ static int basename_lua( lua_State *L )
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
     char *buf = strndup( path, len );
-    
+
     if( buf ){
         lua_pushstring( L, basename( buf ) );
         free( buf );
@@ -100,7 +100,7 @@ static int basename_lua( lua_State *L )
     // got error
     lua_pushnil( L );
     lua_pushstring( L, strerror( errno ) );
-    
+
     return 2;
 }
 
@@ -110,14 +110,14 @@ static int extname_lua( lua_State *L )
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
     const char *ext = NULL;
-    
+
     if( !len || !( ext = rindex( path, '.' ) ) || index( ext, '/' ) ){
         lua_pushnil( L );
     }
     else {
         lua_pushlstring( L, ext, len - ( ext - path ) );
     }
-    
+
     return 1;
 }
 
@@ -127,7 +127,7 @@ static int exists_lua( lua_State *L )
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
     char *rpath = realpath( path, NULL );
-    
+
     if( rpath ){
         lua_pushstring( L, rpath );
         free( rpath );
@@ -141,7 +141,7 @@ static int exists_lua( lua_State *L )
     // got error
     lua_pushnil(L);
     lua_pushstring( L, strerror( errno ) );
-    
+
     return 2;
 }
 
@@ -152,11 +152,11 @@ static inline int pathof_lua( lua_State *L, mode_t m )
     const char *path = luaL_checklstring( L, 1, &len );
     char *rpath = realpath( path, NULL );
     int rc = -1;
-    
+
     if( rpath )
     {
         struct stat info = {0};
-        
+
         if( stat( path, &info ) == 0 )
         {
             if( ( info.st_mode & S_IFMT ) == m ){
@@ -167,10 +167,10 @@ static inline int pathof_lua( lua_State *L, mode_t m )
                 rc = 0;
             }
         }
-        
+
         free( rpath );
     }
-        
+
     switch( rc )
     {
         case 0:
@@ -212,7 +212,7 @@ static int stat_lua( lua_State *L )
     statfn_t statfn = stat;
     int flgs = O_RDONLY|O_CLOEXEC;
     int openfd = 0;
-    
+
     // check argument
     if( argc > 3 ){
         argc = 3;
@@ -225,7 +225,7 @@ static int stat_lua( lua_State *L )
                 luaL_checktype( L, 3, LUA_TBOOLEAN );
                 openfd = lua_toboolean( L, 3 );
             }
-        
+
         // follow symlinks option: default true
         case 2:
             if( !lua_isnoneornil( L, 2 ) )
@@ -239,7 +239,7 @@ static int stat_lua( lua_State *L )
             }
         break;
     }
-    
+
     if( openfd )
     {
         if( ( openfd = open( path, flgs, 0000644 ) ) == -1 ){
@@ -303,7 +303,7 @@ STAT_SUCCESS:
                 lstate_str2tbl( L, "type", "fifo" );
             break;
         }
-        
+
         return 1;
     }
 
@@ -315,7 +315,7 @@ STAT_FAILURE:
 
     lua_pushnil(L);
     lua_pushstring( L, strerror( errno ) );
-    
+
     return 2;
 }
 
@@ -357,18 +357,18 @@ static int readdir_lua( lua_State *L )
     size_t len = 0;
     const char *path = luaL_checklstring( L, 1, &len );
     DIR *dir = opendir( path );
-    
+
     if( dir )
     {
         struct dirent *entry = NULL;
         int i = 0;
-        
+
         lua_newtable( L );
         errno = 0;
         while( ( entry = readdir( dir ) ) ){
             lstate_str2arr( L, entry->d_name, ++i );
         }
-        
+
         closedir( dir );
         if( errno ){
             lua_pop( L, 1 );
@@ -377,14 +377,14 @@ static int readdir_lua( lua_State *L )
             return 1;
         }
     }
-    
+
     // got error
     if( errno == ENOENT ){
         return 0;
     }
     lua_pushnil(L);
     lua_pushstring( L, strerror( errno ) );
-    
+
     return 2;
 }
 
@@ -415,7 +415,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
         { NULL, NULL }
     };
     struct luaL_Reg *ptr = funcs;
-    
+
     // create protected-table
     lua_newtable( L );
     // create __metatable
@@ -423,13 +423,13 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
     // create substance
     lua_pushstring( L, "__index" );
     lua_newtable( L );
-    
+
     // set functions
     do {
         lstate_fn2tbl( L, ptr->name, ptr->func );
         ptr++;
     } while( ptr->name );
-    
+
     // set substance to __metable.__index field
     lua_rawset( L, -3 );
     // set __newindex function to __metable.__newindex filed
@@ -438,7 +438,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
     lua_rawset( L, -3 );
     // convert protected-table to metatable
     lua_setmetatable( L, -2 );
-    
+
     return 1;
 }
 
