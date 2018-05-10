@@ -22,23 +22,27 @@
 
 --]]
 local pathc = require('path.pathc');
-
+local select = select;
+local tostring = tostring;
+local tblconcat = table.concat;
+local strgsub = string.gsub;
+local strgmatch = string.gmatch;
 
 local function concat( sep, ... )
     local argv = {...};
-    local i, v = next( argv );
+    local argc = select( '#', ... );
     local res = {};
     local len = 0;
-    
-    while i do
+
+    for i = 1, argc do
+        local v = argv[i]
         if v ~= nil then
             len = len + 1;
             res[len] = tostring( v );
         end
-        i, v = next( argv, i );
     end
-    
-    return table.concat( res, sep );
+
+    return tblconcat( res, sep );
 end
 
 
@@ -48,8 +52,8 @@ local function normalize( ... )
     local len = 0;
 
     -- remove double slash
-    path = path:gsub( '/+', '/' );
-    for seg in string.gmatch( path, '[^/]+' ) do
+    path = strgsub( path, '/+', '/' );
+    for seg in strgmatch( path, '[^/]+' ) do
         if seg == '..' then
             if len > 0 then
                 res[len] = nil;
@@ -60,8 +64,8 @@ local function normalize( ... )
             res[len] = seg;
         end
     end
-    
-    return '/' .. table.concat( res, '/' );
+
+    return '/' .. tblconcat( res, '/' );
 end
 
 
