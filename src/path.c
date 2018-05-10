@@ -403,7 +403,6 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
         { "exists", exists_lua },
         { "stat", stat_lua },
         { "toDir", todir_lua },
-        { "isReg", isreg_lua },
         { "isDir", isdir_lua },
         { "isChr", ischr_lua },
         { "isBlk", isblk_lua },
@@ -411,6 +410,7 @@ LUALIB_API int luaopen_path_pathc( lua_State *L )
         { "isLnk", islnk_lua },
         { "isSock", issock_lua },
         { "tofile", toreg_lua },
+        { "isfile", isreg_lua },
         { "readdir", readdir_lua },
         { NULL, NULL }
     };
