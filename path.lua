@@ -76,7 +76,6 @@ return {
     extname = pathc.extname,
     exists = pathc.exists,
     stat = pathc.stat,
-    toDir = pathc.toDir,
     isDir = pathc.isDir,
     isChr = pathc.isChr,
     isBlk = pathc.isBlk,
@@ -84,8 +83,10 @@ return {
     isLnk = pathc.isLnk,
     isSock = pathc.isSock,
     toReg = pathc.tofile,   -- deprecated
+    toDir = pathc.todir,    -- deprecated
     isReg = pathc.isfile,   -- deprecated
     tofile = pathc.tofile,
+    todir = pathc.todir,
     isfile = pathc.isfile,
     readdir = pathc.readdir
 };
