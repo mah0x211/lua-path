@@ -99,7 +99,7 @@ return a information about the file pointed to by specified path.
 2. errstr: dependent on a system.
 
 
-### path = toReg( path )
+### path = tofile( path )
 
 returns the absolute path if it is regular file.
 
@@ -113,7 +113,7 @@ returns the absolute path if it is regular file.
 2. errstr: dependent on a system.
 
 
-### path = toDir( path )
+### path = todir( path )
 
 returns the absolute path if it is directory.
 
@@ -127,31 +127,31 @@ returns the absolute path if it is directory.
 2. errstr: dependent on a system.
 
 
-### bool = isReg( info.mode )
+### bool = isfile( info.mode )
 
 returns a true if it is regular file.
 
-### bool = isDir( info.mode )
+### bool = isdir( info.mode )
 
 returns a true if it is directory.
 
-### bool = isChr( info.mode )
+### bool = ischr( info.mode )
 
 returns a true if it is character device.
 
-### bool = isBlk( info.mode )
+### bool = isblk( info.mode )
 
 returns a true if it is block device.
 
-### bool = isFifo( info.mode )
+### bool = isfifo( info.mode )
 
 returns a true if it is FIFO special file, or a pipe.
 
-### bool = isLnk( info.mode )
+### bool = islnk( info.mode )
 
 returns a true if it is symbolic link.
 
-### bool = isSock( info.mode )
+### bool = issock( info.mode )
 
 returns a true if it is socket.
 
