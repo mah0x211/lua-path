@@ -76,18 +76,24 @@ return {
     extname = pathc.extname,
     exists = pathc.exists,
     stat = pathc.stat,
-    isDir = pathc.isDir,
-    isChr = pathc.isChr,
-    isBlk = pathc.isBlk,
-    isFifo = pathc.isFifo,
-    isLnk = pathc.isLnk,
-    isSock = pathc.isSock,
     toReg = pathc.tofile,   -- deprecated
     toDir = pathc.todir,    -- deprecated
     isReg = pathc.isfile,   -- deprecated
+    isDir = pathc.isdir,    -- deprecated
+    isChr = pathc.ischr,    -- deprecated
+    isBlk = pathc.isblk,    -- deprecated
+    isFifo = pathc.isfifo,  -- deprecated
+    isLnk = pathc.islnk,    -- deprecated
+    isSock = pathc.issock,  -- deprecated
     tofile = pathc.tofile,
     todir = pathc.todir,
     isfile = pathc.isfile,
+    isdir = pathc.isdir,
+    ischr = pathc.ischr,
+    isblk = pathc.isblk,
+    isfifo = pathc.isfifo,
+    islnk = pathc.islnk,
+    issock = pathc.issock,
     readdir = pathc.readdir
 };
 
